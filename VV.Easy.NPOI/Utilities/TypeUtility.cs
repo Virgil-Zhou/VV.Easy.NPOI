@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using VV.Easy.NPOI.Attributes;
 using VV.Easy.NPOI.Cache;
 using VV.Easy.NPOI.Models;
+using static System.String;
 
 namespace VV.Easy.NPOI.Utilities
 {
@@ -34,6 +35,7 @@ namespace VV.Easy.NPOI.Utilities
                     continue;
                 }
 
+                var exists = false;
                 for (int ci = 0; ci < titleRow.LastCellNum; ci++)
                 {
                     var cell = titleRow.GetCell(ci);
@@ -42,9 +44,15 @@ namespace VV.Easy.NPOI.Utilities
                     var titleName = cell.StringCellValue.Trim();
                     if (colAttrObj.TitleName == titleName)
                     {
+                        exists = true;
                         colInfoDic.AddColumnInfo(propInfo.Name, ci, colAttrObj);
                         break;
                     }
+                }
+
+                if (!exists)
+                {
+                    colInfoDic.AddColumnInfo(propInfo.Name, null, colAttrObj);
                 }
             }
 
@@ -65,7 +73,7 @@ namespace VV.Easy.NPOI.Utilities
             if (targetType == null)
                 throw new ArgumentNullException(nameof(targetType));
 
-            var value = cell.GetCellValue(workbook).ToString();
+            var value = cell.GetCellValue(workbook)?.ToString();
 
             var success = (true, "");
             var failed = (false, $"值：“{value}” 不能被转换成：{targetType.FullName} 类型。");
@@ -73,6 +81,13 @@ namespace VV.Easy.NPOI.Utilities
             {
                 return success;
             }
+
+            if (!targetType.IsGenericType && value == null)
+
+                if (targetType.IsGenericType && IsNullOrWhiteSpace(value))
+                {
+                    return success;
+                }
 
             // 浮点型
             if (targetType == Constants.BuiltInTypes.Decimal || targetType == Constants.BuiltInTypes.Double || targetType == Constants.BuiltInTypes.Float ||

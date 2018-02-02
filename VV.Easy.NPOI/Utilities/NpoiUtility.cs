@@ -48,7 +48,7 @@ namespace VV.Easy.NPOI.Utilities
                     return GetCellValue(xssfCell, workbook);
 
                 case CellType.Blank:
-                    return "";
+                    return null;
 
                 case CellType.Unknown:
                 default:
@@ -100,6 +100,20 @@ namespace VV.Easy.NPOI.Utilities
             }
 
             return (msg == "", msg);
+        }
+
+
+        public static void RetentionInvalidateData<T>(this IWorkbook workbook, string name, List<RowInfoWrapper<T>> rowInfoWrapperList, bool isIncludeValidData = true) where T : class, new()
+        {
+            if (workbook == null)
+                throw new ArgumentNullException(nameof(workbook));
+
+            if (IsNullOrWhiteSpace(name))
+                throw new ArgumentNullException(nameof(name));
+
+            var index = workbook.GetSheetIndex(name);
+
+            RetentionInvalidateData(workbook, index, rowInfoWrapperList, isIncludeValidData);
         }
 
 

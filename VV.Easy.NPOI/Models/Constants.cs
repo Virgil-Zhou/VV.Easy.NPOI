@@ -108,7 +108,7 @@ namespace VV.Easy.NPOI.Models
 
         public static class ErrorInfoTemplate
         {
-            public static string AllInfo { get; } = "工作表（{0}），第 {1 行，列名 “{2}” {3}。";
+            public static string AllInfo { get; } = "工作表（{0}），第 {1} 行，列名 “{2}” {3}。";
         }
     }
 }

@@ -80,27 +80,41 @@ namespace VV.Easy.NPOI
                     try
                     {
                         var colInfo = colInfoDic[col.Name];
-                        if (!colInfo.ColumnIndex.HasValue)
+
+                        if ((colInfo.ColumnAttr.ColumnFlags & ColumnFlags.ColRequired) == ColumnFlags.ColRequired || (colInfo.ColumnAttr.ColumnFlags & ColumnFlags.ValRequired) == ColumnFlags.ValRequired)
                         {
-                            if ((colInfo.ColumnAttr.ColumnFlags & ColumnFlags.ColRequired) == ColumnFlags.ColRequired || (colInfo.ColumnAttr.ColumnFlags & ColumnFlags.ValRequired) == ColumnFlags.ValRequired)
+                            if (!colInfo.ColumnIndex.HasValue)
                             {
                                 rowInfoWrapper.RowErrorDic.AddRowError(col.Name, $"工作表（{sheet.SheetName}），第 {ri + 1} 行，列名 “{colInfo.ColumnAttr.TitleName}” 不存在。");
+                                continue;
                             }
-                            continue;
                         }
 
                         var cell = row.GetCell(colInfo.ColumnIndex.Value);
-                        if (cell == null)
+                        var value = cell.GetCellValue(workbook);
+
+                        if ((colInfo.ColumnAttr.ColumnFlags & ColumnFlags.ValRequired) == ColumnFlags.ValRequired ||
+                             (
+                                (colInfo.ColumnAttr.ColumnFlags & ColumnFlags.ColRequired) == ColumnFlags.ColRequired &&
+                                (colInfo.ColumnAttr.ColumnFlags & ColumnFlags.NotNullOrWhiteSpace) == ColumnFlags.NotNullOrWhiteSpace
+                             )
+                           )
                         {
-                            if ((colInfo.ColumnAttr.ColumnFlags & ColumnFlags.ValRequired) == ColumnFlags.ValRequired ||
-                                (
-                                   (colInfo.ColumnAttr.ColumnFlags & ColumnFlags.ColRequired) == ColumnFlags.ColRequired &&
-                                   (colInfo.ColumnAttr.ColumnFlags & ColumnFlags.NotNullOrWhiteSpace) == ColumnFlags.NotNullOrWhiteSpace
-                               ))
+                            if (value == null)
                             {
                                 rowInfoWrapper.RowErrorDic.AddRowError(col.Name, $"工作表（{sheet.SheetName}），第 {ri + 1} 行，列名 “{colInfo.ColumnAttr.TitleName}” 不能为空。");
+                                continue;
                             }
-                            continue;
+                        }
+
+                        
+                        if ((colInfo.ColumnAttr.ColumnFlags & ColumnFlags.NotNullOrWhiteSpace) == ColumnFlags.NotNullOrWhiteSpace)
+                        {
+                            if (value == null || IsNullOrWhiteSpace(value.ToString()))
+                            {
+                                rowInfoWrapper.RowErrorDic.AddRowError(col.Name, $"工作表（{sheet.SheetName}），第 {ri + 1} 行，列名 “{colInfo.ColumnAttr.TitleName}” 不能为空。");
+                                continue;
+                            }
                         }
 
                         var (CheckResult, ErrorMsg) = cell.Check(col.PropertyType, workbook);
@@ -110,12 +124,7 @@ namespace VV.Easy.NPOI
                             continue;
                         }
 
-                        var value = cell.GetCellValue(workbook);
-                        if ((colInfo.ColumnAttr.ColumnFlags & ColumnFlags.NotNullOrWhiteSpace) == ColumnFlags.NotNullOrWhiteSpace && IsNullOrWhiteSpace(value.ToString()))
-                        {
-                            rowInfoWrapper.RowErrorDic.AddRowError(col.Name, $"工作表（{sheet.SheetName}），第 {ri + 1} 行，列名 “{colInfo.ColumnAttr.TitleName}” 不能为空。");
-                            continue;
-                        }
+
 
                         var propVal = ConvertUtility.ConvertTo(value, col.PropertyType);
 

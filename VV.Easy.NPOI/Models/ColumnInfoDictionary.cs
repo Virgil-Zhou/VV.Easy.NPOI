@@ -35,7 +35,7 @@ namespace VV.Easy.NPOI.Models
 
         public void Add(KeyValuePair<string, ColumnInfo> item) => ((IDictionary<string, ColumnInfo>)_innerDictionary).Add(item);
 
-        public void AddColumnInfo(string key, int colIndex, ColumnAttribute colAttrObj)
+        public void AddColumnInfo(string key, int? colIndex, ColumnAttribute colAttrObj)
         {
             var colInfo = GetColumnInfoForKey(key);
 
