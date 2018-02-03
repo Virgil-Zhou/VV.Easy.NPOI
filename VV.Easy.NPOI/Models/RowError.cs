@@ -13,7 +13,7 @@ namespace VV.Easy.NPOI.Models
             ErrorMessage = errorMessage ?? "";
         }
 
-        public RowError(Exception exception) : this(null, exception)
+        public RowError(Exception exception) : this(exception.Message, exception)
         {
 
         }

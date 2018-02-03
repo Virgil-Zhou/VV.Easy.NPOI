@@ -93,12 +93,7 @@ namespace VV.Easy.NPOI
                         var cell = row.GetCell(colInfo.ColumnIndex.Value);
                         var value = cell.GetCellValue(workbook);
 
-                        if ((colInfo.ColumnAttr.ColumnFlags & ColumnFlags.ValRequired) == ColumnFlags.ValRequired ||
-                             (
-                                (colInfo.ColumnAttr.ColumnFlags & ColumnFlags.ColRequired) == ColumnFlags.ColRequired &&
-                                (colInfo.ColumnAttr.ColumnFlags & ColumnFlags.NotNullOrWhiteSpace) == ColumnFlags.NotNullOrWhiteSpace
-                             )
-                           )
+                        if ((colInfo.ColumnAttr.ColumnFlags & ColumnFlags.ValRequired) == ColumnFlags.ValRequired)
                         {
                             if (value == null)
                             {
@@ -107,10 +102,9 @@ namespace VV.Easy.NPOI
                             }
                         }
 
-                        
                         if ((colInfo.ColumnAttr.ColumnFlags & ColumnFlags.NotNullOrWhiteSpace) == ColumnFlags.NotNullOrWhiteSpace)
                         {
-                            if (value == null || IsNullOrWhiteSpace(value.ToString()))
+                            if (IsNullOrWhiteSpace(value?.ToString()))
                             {
                                 rowInfoWrapper.RowErrorDic.AddRowError(col.Name, $"工作表（{sheet.SheetName}），第 {ri + 1} 行，列名 “{colInfo.ColumnAttr.TitleName}” 不能为空。");
                                 continue;
@@ -123,8 +117,6 @@ namespace VV.Easy.NPOI
                             rowInfoWrapper.RowErrorDic.AddRowError(col.Name, $"工作表（{sheet.SheetName}），第 {ri + 1} 行，列名 “{colInfo.ColumnAttr.TitleName}” {ErrorMsg}");
                             continue;
                         }
-
-
 
                         var propVal = ConvertUtility.ConvertTo(value, col.PropertyType);
 

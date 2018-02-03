@@ -67,27 +67,24 @@ namespace VV.Easy.NPOI.Utilities
 
         internal static (bool, string) Check(this ICell cell, Type targetType, IWorkbook workbook)
         {
-            if (cell == null)
-                throw new ArgumentNullException(nameof(cell));
-
             if (targetType == null)
                 throw new ArgumentNullException(nameof(targetType));
 
             var value = cell.GetCellValue(workbook)?.ToString();
 
             var success = (true, "");
-            var failed = (false, $"值：“{value}” 不能被转换成：{targetType.FullName} 类型。");
+            var failed = (false, $"值：“{value ?? "Null"}” 不能被转换成：{targetType.FullName} 类型。");
             if (targetType == Constants.BuiltInTypes.String || targetType == Constants.BuiltInTypes.Char)
             {
                 return success;
             }
 
-            if (!targetType.IsGenericType && value == null)
+            if (targetType.IsGenericType && IsNullOrWhiteSpace(value))
+            {
+                return success;
+            }
 
-                if (targetType.IsGenericType && IsNullOrWhiteSpace(value))
-                {
-                    return success;
-                }
+            if (value == null) return failed;
 
             // 浮点型
             if (targetType == Constants.BuiltInTypes.Decimal || targetType == Constants.BuiltInTypes.Double || targetType == Constants.BuiltInTypes.Float ||
