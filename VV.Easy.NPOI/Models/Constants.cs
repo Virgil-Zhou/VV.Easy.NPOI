@@ -90,7 +90,7 @@ namespace VV.Easy.NPOI.Models
 
             public static readonly Regex RegDecimal = new Regex(@"^\d+(\.?\d+)?$", RegexOptions.Compiled);
 
-            public static readonly Regex RegDecimalSign = new Regex(@"[+-]?\d+(\.?\d+)?$", RegexOptions.Compiled);
+            public static readonly Regex RegDecimalSign = new Regex(@"^[+-]?\d+(\.?\d+)?$", RegexOptions.Compiled);
 
             // 时间，中文，Email，手机.....
         }
