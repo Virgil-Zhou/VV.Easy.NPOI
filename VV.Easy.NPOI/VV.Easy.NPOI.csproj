@@ -59,6 +59,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\ColumnAttribute.cs" />
+    <Compile Include="Attributes\CompareAttribute.cs" />
+    <Compile Include="Attributes\CustomValidationAttribute.cs" />
+    <Compile Include="Attributes\MaxLengthAttribute.cs" />
+    <Compile Include="Attributes\MinLengthAttribute.cs" />
+    <Compile Include="Attributes\RangeAttribute.cs" />
+    <Compile Include="Attributes\RegularExpressionAttribute.cs" />
+    <Compile Include="Attributes\StringLengthAttribute.cs" />
+    <Compile Include="Attributes\ValidationAttribute.cs" />
     <Compile Include="Attributes\SheetAttribute.cs" />
     <Compile Include="Cache\LocalCache.cs" />
     <Compile Include="Models\ColumnFlags.cs" />
