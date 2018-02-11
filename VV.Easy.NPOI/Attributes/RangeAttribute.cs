@@ -35,10 +35,8 @@ namespace VV.Easy.NPOI.Attributes
             _conversion = conversion;
         }
 
-
         public override bool IsValid(dynamic value)
         {
-            // 如果值为null，则验证通过，应使用非空验证判断。
             if (value == null) return true;
 
             dynamic convertedValue;
@@ -54,6 +52,5 @@ namespace VV.Easy.NPOI.Attributes
 
             return _minimum.CompareTo(convertedValue) <= 0 && _maximum.CompareTo(convertedValue) >= 0;
         }
-
     }
 }

@@ -10,8 +10,8 @@ namespace VV.Easy.NPOI.Attributes
     {
         public string ErrorMessage { get; set; }
 
-        private string _errorMessage;
-
         public abstract bool IsValid(dynamic value);
+
+        public abstract string FormatErrorMessage(string name);
     }
 }
